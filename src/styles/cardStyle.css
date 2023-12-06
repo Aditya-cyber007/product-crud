@@ -1,0 +1,56 @@
+.card-containers{
+    width: 14.5vw;
+    height: 40vh;
+    border-radius: 0.625rem;
+    padding: 1.25rem;
+    margin: 1.25rem;
+    background-color: rgb(168, 250, 250);
+}
+.image img{
+    width: 14.5vw;
+    height: 20vh;
+}
+.title p{
+    font-size: 1.1rem;
+    margin: 0.313rem;
+}
+.desc p{
+    margin: 0.313rem;
+}
+
+
+button{
+    padding: 0.5rem 0.8rem;
+    text-decoration: none;
+    margin-right: 7px;
+    border-radius: 0.313rem;
+    border: none;
+    color: aliceblue;
+}
+button:hover{
+    cursor: pointer;
+    
+}
+.btn-update{
+    background-color: rgb(9, 179, 108);
+}
+.btn-delete{
+    background-color: rgb(238, 40, 40);
+}
+.btn-delete:hover{
+    background-color: rgb(255, 0, 0);
+}
+.btn-view{
+    background-color: rgb(180, 180, 100);
+}
+.btn-view:hover{
+    background-color: rgb(191, 191, 94);
+}
+.cardflex{
+    display: flex;
+}
+.price{
+    font-size: 1.25rem;
+    margin: 0.313rem;
+    margin-left: 3.5rem;
+}
