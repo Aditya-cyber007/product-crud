@@ -40,7 +40,7 @@ const ViewModal = ({ isOpen, onClose, productId}) => {
   );
 };
 
-const Card = ({ product }) => {
+const Card = ({ product ,onEdit}) => {
   const dispatch = useDispatch();
 
   const [isOpen, setIsOpen] = React.useState(false);
@@ -49,6 +49,11 @@ const Card = ({ product }) => {
   const openModal=(id)=>{
     setIsOpen(true);
     setProductId(id);
+  }
+  const [editModalIsOpen, setEditModalIsOpen] = React.useState(false);
+
+  const editModal=(id)=>{
+    onEdit(id);
   }
   const deleteProduct=(id)=>{
     const isconfirmed=window.confirm("Are you sure you want to delete this product?");
@@ -60,9 +65,10 @@ const Card = ({ product }) => {
     }
   }
 
-
   return (
     <div>
+
+    
     <ViewModal isOpen={isOpen} onClose={() => setIsOpen(false)} productId={productId} />
     <div className="card-containers">
     <div className="image">
@@ -85,7 +91,7 @@ const Card = ({ product }) => {
     </div>
     
     <button className="btn-view"  onClick={()=>{openModal(product.id)}}>View</button>
-    <button className="btn-update"  >Update</button>
+    <button className="btn-update" onClick={()=>{editModal(product.id)}} >Update</button>
     <button className="btn-delete" onClick={()=>{deleteProduct(product.id)}}>Delete</button>
     </div>
     </div>

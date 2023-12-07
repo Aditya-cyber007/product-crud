@@ -52,6 +52,25 @@ export const createProducts = createAsyncThunk('createProducts',async(data,{reje
             }
             })
 
+    //Update product
+    export const updateProducts = createAsyncThunk('updateProducts',async(data,{rejectWithValue})=>{
+        const response=await fetch(`http://localhost:3001/products/${data.id}`,{
+            method:'PUT',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(data)
+        });
+        try{
+                const product=await response.json();
+                return product;
+            }
+        catch(error){
+            return rejectWithValue(error.message);
+        }
+        })
+
+
 
 
 export const productDetails = createSlice({
@@ -96,6 +115,20 @@ export const productDetails = createSlice({
                 }
             });
             builder.addCase(deleteProducts.rejected,(state,action)=>{
+                state.loading=false;
+                state.error=action.payload;
+            });
+            builder.addCase(updateProducts.pending,(state,action)=>{
+                state.loading=true;
+            });
+            builder.addCase(updateProducts.fulfilled,(state,action)=>{
+                state.loading=false;
+                const product=action.payload;
+                if(product){
+                    state.products=state.products.map((item)=>item.id===product.id?product:item);
+                }
+            });
+            builder.addCase(updateProducts.rejected,(state,action)=>{
                 state.loading=false;
                 state.error=action.payload;
             });

@@ -3,13 +3,37 @@ import Card from "./card";
 import "../styles/productStyle.css";
 import { useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { createProducts, showProducts } from "../features/productDetails";
-const Modal = ({ isOpen, onClose, onSave }) => {
+import { createProducts, showProducts, updateProducts } from "../features/productDetails";
+const Modal = ({ isOpen, onClose, onSave, editId,isEditabled }) => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [imageLink, setImageLink] = useState("");
+
+  const dispatch = useDispatch();
+  const {products,loading} = useSelector((state) => state.app);
+  const product = products.filter((product) => product.id === editId);
+ 
+  useEffect(() => {
+    if(isEditabled){
+      setTitle(product[0].title);
+      setPrice(product[0].price);
+      setDescription(product[0].description);
+      setType(product[0].type);
+      setImageLink(product[0].image);
+
+    }
+    else{
+      setTitle("");
+      setPrice("");
+      setDescription("");
+      setType("");
+      setImageLink("");
+    }
+  }, [isEditabled,editId]);
+
+
 
   const handleSave = () => {
     const products = {
@@ -20,7 +44,6 @@ const Modal = ({ isOpen, onClose, onSave }) => {
       "image": imageLink,
 
     };
-
     onSave(products);
     setTitle("");
     setPrice("");
@@ -29,6 +52,26 @@ const Modal = ({ isOpen, onClose, onSave }) => {
     setImageLink("");
     onClose();
   };
+
+  const handleUpdate = () => {
+    const products = {
+      "id": editId,
+      "title": title,
+      "price": price,
+      "description": description,
+      "type": type,
+      "image": imageLink,
+
+    };
+    dispatch(updateProducts(products));
+    setTitle("");
+    setPrice("");
+    setDescription("");
+    setType("");
+    setImageLink("");
+    onClose();
+  };
+
 
   if (!isOpen) return null;
 
@@ -69,13 +112,16 @@ const Modal = ({ isOpen, onClose, onSave }) => {
           value={imageLink}
           onChange={(e) => setImageLink(e.target.value)}
         />
-        <button onClick={handleSave}>Save</button>
+        {!isEditabled? <button onClick={handleSave}>Save</button> :<button onClick={handleUpdate}>Update</button>}
       </div>
     </div>
   );
 };
 
 const Products = () => {
+
+  
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalData, setModalData] = useState({
     title: "Product Title",
@@ -86,7 +132,7 @@ const Products = () => {
   });
 
   const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+  const closeModal = () => {setModalIsOpen(false) ;setIsEditabled(false)};
 
   const dispatch = useDispatch();
 
@@ -98,20 +144,30 @@ const Products = () => {
 
   const {products,loading} = useSelector((state) => state.app);
 
+  const[isEditabled,setIsEditabled]=useState(false);
+  const[editId,setEditId]=useState();
+  const handleEdit = (id) => {
+    console.log("Editing product with id:", id);
+    setModalIsOpen(true);
+    setIsEditabled(true);
+    setEditId(id);
+  };
+
+
+
   useEffect(() => {
     dispatch(showProducts());
   }, []);
 
   return (
     <div>
-      {loading&&<h1>Products loading</h1>}
       <button style={{ marginLeft: "25px" }} onClick={openModal}>
         Open Modal
       </button>
-      <Modal isOpen={modalIsOpen} onClose={closeModal} onSave={handleSave} />
+      <Modal isOpen={modalIsOpen} onClose={closeModal} onSave={handleSave} isEditabled={isEditabled} editId={editId} />
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {products.map((product) => (
-          <Card key={product.id} product={product} />
+          <Card key={product.id} product={product} onEdit={handleEdit} />
         ))}
       </div>
     </div>
